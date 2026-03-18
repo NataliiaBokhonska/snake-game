@@ -60,12 +60,18 @@ async function initSession(name) {
     });
     const data = await res.json();
     sessionId = data.sessionId;
-    playerName = data.name;
   } catch (err) {
     console.error('Failed to init session:', err);
     // Fallback — play without persistence
     sessionId = null;
-    playerName = name;
+  }
+  // Always use what the user typed, regardless of what the session stored
+  playerName = name;
+
+  // Restore personal best from localStorage
+  if (sessionId) {
+    const stored = localStorage.getItem(`best_${sessionId}`);
+    if (stored !== null) bestScore = parseInt(stored, 10);
   }
 }
 
@@ -163,7 +169,10 @@ function tick() {
 
   if (head.x === food.x && head.y === food.y) {
     score++;
-    if (score > bestScore) bestScore = score;
+    if (score > bestScore) {
+      bestScore = score;
+      if (sessionId) localStorage.setItem(`best_${sessionId}`, bestScore);
+    }
     updateHUD();
     spawnFood();
   } else {
@@ -291,7 +300,7 @@ startBtn.addEventListener('click', async () => {
     return;
   }
   await initSession(name);
-  hudName.textContent = playerName;
+  hudName.textContent = name;
   showScreen(gameScreen);
   gameoverOverlay.classList.add('hidden');
   startGame();
