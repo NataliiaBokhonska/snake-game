@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.npm
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build artifacts
+dist/
+build/
+
+# Docker volumes (local dev)
+redis_data/
+
+# Test coverage
+coverage/
