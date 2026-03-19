@@ -68,11 +68,9 @@ async function initSession(name) {
   // Always use what the user typed, regardless of what the session stored
   playerName = name;
 
-  // Restore personal best from localStorage
-  if (sessionId) {
-    const stored = localStorage.getItem(`best_${sessionId}`);
-    if (stored !== null) bestScore = parseInt(stored, 10);
-  }
+  // Set bestScore to the global top score from the leaderboard
+  const top = await fetchTopScores();
+  bestScore = top.length > 0 ? top[0].score : 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -171,7 +169,6 @@ function tick() {
     score++;
     if (score > bestScore) {
       bestScore = score;
-      if (sessionId) localStorage.setItem(`best_${sessionId}`, bestScore);
     }
     updateHUD();
     spawnFood();
